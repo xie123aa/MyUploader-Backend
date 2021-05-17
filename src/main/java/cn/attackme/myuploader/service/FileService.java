@@ -51,10 +51,14 @@ public class FileService {
                                 Integer chunks,
                                 Integer chunk,
                                 MultipartFile file) throws IOException {
+        //1.生成名称，以<文件名称，分块上传记录数组>生成分块记录
         String fileName = getFileName(md5, chunks);
         FileUtils.writeWithBlok(UploadConfig.path + fileName, size, file.getInputStream(), file.getSize(), chunks, chunk);
+        //2.记录上传分块的标识
         addChunk(md5,chunk);
+        //3上传完毕存储表中
         if (isUploaded(md5)) {
+            //4.上传完毕删除记录
             removeKey(md5);
             fileDao.save(new File(name, md5,UploadConfig.path + fileName, new Date()));
         }

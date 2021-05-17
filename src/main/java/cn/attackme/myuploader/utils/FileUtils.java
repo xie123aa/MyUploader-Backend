@@ -37,11 +37,16 @@ public class FileUtils {
      * @throws IOException
      */
     public static void writeWithBlok(String target, Long targetSize, InputStream src, Long srcSize, Integer chunks, Integer chunk) throws IOException {
+        //断点续传使用的流RandomAccessFile
         RandomAccessFile randomAccessFile = new RandomAccessFile(target,"rw");
+        //需要写总文件的大小
         randomAccessFile.setLength(targetSize);
+        //如果是最后一块
         if (chunk == chunks - 1) {
+            //需要写入的位置，总的减去最后一块的大小
             randomAccessFile.seek(targetSize - srcSize);
         } else {
+            //不是最后一块，找到写入的起始位置
             randomAccessFile.seek(chunk * srcSize);
         }
         byte[] buf = new byte[1024];

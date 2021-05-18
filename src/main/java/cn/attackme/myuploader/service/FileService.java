@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import static cn.attackme.myuploader.utils.FileUtils.generateFileName;
 import static cn.attackme.myuploader.utils.UploadUtils.*;
@@ -74,4 +75,15 @@ public class FileService {
         file.setMd5(md5);
         return fileDao.getByFile(file) == null;
     }
+
+    public List<File> getFileList(){
+        return fileDao.getFileList();
+    }
+
+
+    public File getByid(Long id){
+        return fileDao.getById(id);
+    }
+
+
 }

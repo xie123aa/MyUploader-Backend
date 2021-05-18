@@ -3,6 +3,8 @@ package cn.attackme.myuploader.dao;
 import cn.attackme.myuploader.model.File;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface FileDao {
     /**
@@ -38,4 +40,6 @@ public interface FileDao {
      * @return
      */
     File getByFile(File file);
+
+    List<File> getFileList();
 }

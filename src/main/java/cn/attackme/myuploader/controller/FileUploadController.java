@@ -1,25 +1,15 @@
 package cn.attackme.myuploader.controller;
 
-import cn.attackme.myuploader.model.File;
+import cn.attackme.myuploader.config.UploadConfig;
+import cn.attackme.myuploader.model.FileMeta;
 import cn.attackme.myuploader.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -36,45 +26,94 @@ public class FileUploadController {
     public void upload(String name,
                        String md5,
                        MultipartFile file) throws IOException {
+//        boolean isUpload = fileService.checkMd5(md5);
+//        if (isUpload) {
+//            return;
+//        }
         fileService.upload(name, md5,file);
     }
 
     @GetMapping("/getFileList")
-    public List<File> getUpload() throws IOException {
+    public List<FileMeta> getUpload() throws IOException {
         return fileService.getFileList();
     }
 
-    @GetMapping("/download/{fileId}")
+    @RequestMapping("/download/{fileId}")
     @ResponseBody
-    public HttpServletResponse downloadFile(HttpServletResponse response,@PathVariable(name = "fileId") String fileId) throws FileNotFoundException {
-        try {
-            // 取得文件名。
-            java.io.File file = new java.io.File(fileService.getByid(Long.parseLong(fileId)).getPath());
-            String filename = fileService.getByid(Long.parseLong(fileId)).getName();
-            // 取得文件的后缀名。
-            String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
-            // 以流的形式下载文件。
-            InputStream fis = new BufferedInputStream(new FileInputStream(fileService.getByid(Long.parseLong(fileId)).getPath()));
-            byte[] buffer = new byte[fis.available()];
-            fis.read(buffer);
-            fis.close();
-            // 清空response
-            response.reset();
-            // 设置response的Header
-            response.reset();
-//            response.addHeader("Access-Control-Allow-Origin", "*");
-//            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//            response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
-            response.addHeader("Content-Length", "" + file.length());
-            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-            response.setContentType("application/octet-stream");
-            toClient.write(buffer);
-            toClient.flush();
-            toClient.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    public String downLoad(@PathVariable String fileId, HttpServletResponse response) throws UnsupportedEncodingException {
+        FileMeta pictureFile = fileService.getByid(Long.parseLong(fileId));
+        File file = new File(pictureFile.getPath());
+        //判断文件是否存在，其实不用判断，因为不存在也设置了对应的异常处理
+        if (file.exists()) {  //文件存在
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(pictureFile.getName(), "UTF-8"));  //设置下载文件名，解决文件名中文乱码
+
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null; //输入流
+            BufferedInputStream bis = null;
+            OutputStream os = null; //输出流
+            try {
+                os = response.getOutputStream();
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                int length;
+                while ((length=bis.read(buffer)) != -1) {
+                    os.write(buffer,0,length);
+                }
+                fis.close();
+                bis.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return "文件不存在！";
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "下载失败！";
+            }
+
+            return null;  //下载成功
         }
-        return response;
+
+        return "文件不存在";
     }
+
+    @RequestMapping("/downloadThumb/{fileId}")
+    @ResponseBody
+    public String downLoadThumb(@PathVariable String fileId, HttpServletResponse response) throws IOException {
+        FileMeta file1 = fileService.getByid(Long.parseLong(fileId));
+        String path = UploadConfig.thumbPath+file1.getName();
+        File file = new File(path);
+        //判断文件是否存在，其实不用判断，因为不存在也设置了对应的异常处理
+        if (file.exists()) {  //文件存在
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(file1.getName(), "UTF-8"));  //设置下载文件名，解决文件名中文乱码
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null; //输入流
+            BufferedInputStream bis = null;
+            OutputStream os = null; //输出流
+            try {
+                os = response.getOutputStream();
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                int length;
+                while ((length=bis.read(buffer)) != -1) {
+                    os.write(buffer,0,length);
+                }
+                fis.close();
+                bis.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return "文件不存在！";
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "下载失败！";
+            }
+
+            return null;  //下载成功
+        }
+
+        return "文件不存在";
+    }
+
     }

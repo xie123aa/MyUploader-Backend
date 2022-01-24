@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="cn.attackme.myuploader.dao.FileDao">
-    <resultMap id="BaseResultMap" type="cn.attackme.myuploader.model.File">
+    <resultMap id="BaseResultMap" type="cn.attackme.myuploader.model.FileMeta">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="md5" property="md5" />
@@ -17,17 +17,17 @@
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from file
+        from file_meta
         where id = #{id}
     </select>
 
-    <insert id="save" parameterType="cn.attackme.myuploader.model.File" keyProperty="id" useGeneratedKeys="true">
-        insert into file(name,md5,path,upload_time) values(#{name},#{md5},#{path},#{uploadTime})
+    <insert id="save" parameterType="cn.attackme.myuploader.model.FileMeta" keyProperty="id" useGeneratedKeys="true">
+        insert into file_meta(name,md5,path,upload_time) values(#{name},#{md5},#{path},#{uploadTime})
     </insert>
 
-    <update id="update" parameterType="cn.attackme.myuploader.model.File" >
+    <update id="update" parameterType="cn.attackme.myuploader.model.FileMeta" >
         <if test="id != null">
-            update file
+            update file_meta
             <set>
                 <if test="name != null">
                     name = #{name},
@@ -47,13 +47,13 @@
     </update>
 
     <delete id="deleteById" parameterType="java.lang.Long">
-        delete from file where id = #{id}
+        delete from file_meta where id = #{id}
     </delete>
 
-    <select id="getByFile" parameterType="cn.attackme.myuploader.model.File" resultMap="BaseResultMap">
+    <select id="getByFile" parameterType="cn.attackme.myuploader.model.FileMeta" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from file
+        from file_meta
         <where>
             <if test="id != null">
                 id = #{id}
@@ -76,6 +76,6 @@
     <select id="getFileList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from file
+        from file_meta
     </select>
 </mapper>

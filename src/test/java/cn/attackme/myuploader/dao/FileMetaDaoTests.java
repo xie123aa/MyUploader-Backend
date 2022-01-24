@@ -1,6 +1,6 @@
 package cn.attackme.myuploader.dao;
 
-import cn.attackme.myuploader.model.File;
+import cn.attackme.myuploader.model.FileMeta;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,18 +19,18 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FileDaoTests {
+public class FileMetaDaoTests {
     @Autowired
     private FileDao fileDao;
 
-    private File testFile;
+    private FileMeta testFile;
 
     /**
      * 生成File实例
      */
     @Before
     public void generateFile() {
-        testFile = new File();
+        testFile = new FileMeta();
         testFile.setMd5("121221212");
         testFile.setName("test");
         testFile.setUploadTime(new Date());
@@ -134,7 +134,7 @@ public class FileDaoTests {
      */
     @Test
     public void testGetByNotExistFileReturnNull() {
-        File file = new File();
+        FileMeta file = new FileMeta();
         file.setId(new Long(0));
         assertNull(fileDao.getByFile(file));
     }
@@ -160,8 +160,8 @@ public class FileDaoTests {
     public void testGetByNotUniqueColumnThrowException() {
         fileDao.save(testFile);
         fileDao.save(testFile);
-        File file = new File();
-        file.setMd5(testFile.getMd5());
-        fileDao.getByFile(file);
+        FileMeta fileMeta = new FileMeta();
+        fileMeta.setMd5(testFile.getMd5());
+        fileDao.getByFile(fileMeta);
     }
 }

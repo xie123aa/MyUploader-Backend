@@ -1,6 +1,6 @@
 package cn.attackme.myuploader.dao;
 
-import cn.attackme.myuploader.model.File;
+import cn.attackme.myuploader.model.FileMeta;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -11,21 +11,21 @@ public interface FileDao {
      * 通过主键获取一行数据
      * @return
      */
-    File getById(Long id);
+    FileMeta getById(Long id);
 
     /**
      * 插入一行数据
      * @param file
      * @return
      */
-    int save(File file);
+    int save(FileMeta file);
 
     /**
      * 更新一行数据
      * @param file
      * @return
      */
-    int update(File file);
+    int update(FileMeta file);
 
     /**
      * 删除一行数据
@@ -39,7 +39,7 @@ public interface FileDao {
      * @param file
      * @return
      */
-    File getByFile(File file);
+    FileMeta getByFile(FileMeta file);
 
-    List<File> getFileList();
+    List<FileMeta> getFileList();
 }

@@ -2,8 +2,9 @@ package cn.attackme.myuploader.service;
 
 import cn.attackme.myuploader.config.UploadConfig;
 import cn.attackme.myuploader.dao.FileDao;
-import cn.attackme.myuploader.model.File;
+import cn.attackme.myuploader.model.FileMeta;
 import cn.attackme.myuploader.utils.FileUtils;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,13 @@ public class FileService {
                        MultipartFile file) throws IOException {
         String path = UploadConfig.path + generateFileName();
         FileUtils.write(path, file.getInputStream());
-        fileDao.save(new File(name, md5, path, new Date()));
+        //写入缩略图
+        String thumbPath =UploadConfig.thumbPath+name;
+        Thumbnails.of(path)
+                .size(200, 300)
+                .toFile(thumbPath);
+        //写入原文件
+        fileDao.save(new FileMeta(name, md5, path, new Date()));
     }
 
     /**
@@ -61,7 +68,7 @@ public class FileService {
         if (isUploaded(md5)) {
             //4.上传完毕删除记录
             removeKey(md5);
-            fileDao.save(new File(name, md5,UploadConfig.path + fileName, new Date()));
+            fileDao.save(new FileMeta(name, md5,UploadConfig.path + fileName, new Date()));
         }
     }
 
@@ -71,17 +78,17 @@ public class FileService {
      * @return
      */
     public boolean checkMd5(String md5) {
-        File file = new File();
+        FileMeta file = new FileMeta();
         file.setMd5(md5);
         return fileDao.getByFile(file) == null;
     }
 
-    public List<File> getFileList(){
+    public List<FileMeta> getFileList(){
         return fileDao.getFileList();
     }
 
 
-    public File getByid(Long id){
+    public FileMeta getByid(Long id){
         return fileDao.getById(id);
     }
 

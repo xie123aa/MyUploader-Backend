@@ -1,6 +1,6 @@
-drop table if exists file;
+drop table if exists fileMeta;
 
-create table file(
+create table fileMeta(
   id bigint auto_increment ,
   name varchar(100) not null ,
   md5 varchar(32) ,

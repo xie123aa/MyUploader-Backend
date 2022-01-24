@@ -55,11 +55,11 @@ public void upload(String name,
                    Long size,
                    Integer chunks,
                    Integer chunk,
-                   MultipartFile file) throws IOException {
+                   MultipartFile fileMeta) throws IOException {
     if (chunks != null && chunks != 0) {
-        fileService.uploadWithBlock(name, md5,size,chunks,chunk,file);
+        fileService.uploadWithBlock(name, md5,size,chunks,chunk,fileMeta);
     } else {
-        fileService.upload(name, md5,file);
+        fileService.upload(name, md5,fileMeta);
     }
 }
 ```
@@ -188,7 +188,7 @@ public static void writeWithBlok(String target, Long targetSize, InputStream src
  * @param size
  * @param chunks
  * @param chunk
- * @param file
+ * @param fileMeta
  * @throws IOException
  */
 public void uploadWithBlock(String name,
@@ -196,9 +196,9 @@ public void uploadWithBlock(String name,
                             Long size,
                             Integer chunks,
                             Integer chunk,
-                            MultipartFile file) throws IOException {
+                            MultipartFile fileMeta) throws IOException {
     String fileName = getFileName(md5, chunks);
-    FileUtils.writeWithBlok(UploadConfig.path + fileName, size, file.getInputStream(), file.getSize(), chunks, chunk);
+    FileUtils.writeWithBlok(UploadConfig.path + fileName, size, fileMeta.getInputStream(), fileMeta.getSize(), chunks, chunk);
     addChunk(md5,chunk);
     if (isUploaded(md5)) {
         removeKey(md5);

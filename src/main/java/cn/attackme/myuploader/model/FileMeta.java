@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @ToString
-public class File implements Serializable {
+public class FileMeta implements Serializable {
 
     private static final long serialVersionUID = -6956947981866795431L;
 
@@ -23,10 +23,10 @@ public class File implements Serializable {
     private String path;
     private Date uploadTime;
 
-    public File() {
+    public FileMeta() {
     }
 
-    public File(String name, String md5, String path, Date uploadTime) {
+    public FileMeta(String name, String md5, String path, Date uploadTime) {
         this.name = name;
         this.md5 = md5;
         this.path = path;

@@ -13,5 +13,6 @@ mybatis:
   type-aliases-package: cn.attackme.myuploader.model
 upload:
   path: /Users/xiejiazhi/code/study/upload/
+  thumbpath: /Users/xiejiazhi/code/study/upload/thumb/
 server:
   port: 8082

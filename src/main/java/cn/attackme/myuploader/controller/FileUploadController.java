@@ -3,6 +3,8 @@ package cn.attackme.myuploader.controller;
 import cn.attackme.myuploader.config.UploadConfig;
 import cn.attackme.myuploader.model.FileMeta;
 import cn.attackme.myuploader.service.FileService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -116,4 +118,13 @@ public class FileUploadController {
         return "文件不存在";
     }
 
+    @GetMapping("/getPage")
+    public PageInfo getPageFile(@RequestParam(defaultValue = "1",value = "pageNum") Integer pageNum,
+                                    @RequestParam(defaultValue = "5",value = "pageSize") Integer pageSize) throws IOException {
+
+        PageHelper.startPage(pageNum,pageSize);
+        List<FileMeta> fileList=fileService.getFileList();
+        PageInfo pageInfo = new PageInfo(fileList);
+        return pageInfo;
+    }
     }

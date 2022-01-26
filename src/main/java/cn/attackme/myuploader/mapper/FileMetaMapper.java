@@ -1,12 +1,10 @@
-package cn.attackme.myuploader.dao;
+package cn.attackme.myuploader.mapper;
 
 import cn.attackme.myuploader.model.FileMeta;
-import org.apache.ibatis.annotations.Mapper;
-
+import tk.mybatis.mapper.common.Mapper;
 import java.util.List;
 
-@Mapper
-public interface FileDao {
+public interface FileMetaMapper extends Mapper<FileMeta>{
     /**
      * 通过主键获取一行数据
      * @return

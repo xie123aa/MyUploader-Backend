@@ -1,5 +1,6 @@
 package cn.attackme.myuploader.dao;
 
+import cn.attackme.myuploader.mapper.FileMetaMapper;
 import cn.attackme.myuploader.model.FileMeta;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertNull;
 @SpringBootTest
 public class FileMetaDaoTests {
     @Autowired
-    private FileDao fileDao;
+    private FileMetaMapper fileDao;
 
     private FileMeta testFile;
 

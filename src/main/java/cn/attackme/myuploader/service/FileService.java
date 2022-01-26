@@ -1,9 +1,11 @@
 package cn.attackme.myuploader.service;
 
 import cn.attackme.myuploader.config.UploadConfig;
-import cn.attackme.myuploader.dao.FileDao;
+import cn.attackme.myuploader.mapper.FileMetaMapper;
 import cn.attackme.myuploader.model.FileMeta;
 import cn.attackme.myuploader.utils.FileUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ import static cn.attackme.myuploader.utils.UploadUtils.*;
 @Service
 public class FileService {
     @Autowired
-    private FileDao fileDao;
+    private FileMetaMapper fileDao;
 
 
     /**
@@ -90,6 +92,13 @@ public class FileService {
 
     public FileMeta getByid(Long id){
         return fileDao.getById(id);
+    }
+
+    public PageInfo findPage(int page, int pageSize){
+        PageHelper.startPage(page,pageSize);
+        List<FileMeta> fileList=fileDao.getFileList();
+        PageInfo pageInfo = new PageInfo(fileList);
+        return pageInfo;
     }
 
 

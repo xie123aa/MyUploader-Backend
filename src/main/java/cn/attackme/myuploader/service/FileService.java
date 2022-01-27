@@ -37,11 +37,14 @@ public class FileService {
                        MultipartFile file) throws IOException {
         String path = UploadConfig.path + generateFileName();
         FileUtils.write(path, file.getInputStream());
-        //写入缩略图
-        String thumbPath =UploadConfig.thumbPath+name;
-        Thumbnails.of(path)
-                .size(200, 300)
-                .toFile(thumbPath);
+        //如果是图片写入缩略图
+        if ((FileUtils.getFileType(name)==1)) {
+            //写入缩略图
+            String thumbPath =UploadConfig.thumbPath+name;
+            Thumbnails.of(path)
+                    .size(200, 300)
+                    .toFile(thumbPath);
+        }
         //写入原文件
         fileDao.save(new FileMeta(name, md5, path, new Date()));
     }

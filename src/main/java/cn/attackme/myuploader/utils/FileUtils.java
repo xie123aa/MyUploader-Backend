@@ -2,6 +2,8 @@ package cn.attackme.myuploader.utils;
 
 
 import java.io.*;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.UUID;
 
 /**
@@ -63,5 +65,21 @@ public class FileUtils {
      */
     public static String generateFileName() {
         return UUID.randomUUID().toString();
+    }
+
+    /**
+     * 判断是否为图片或者视频
+     * @param fileName
+     * @return
+     */
+
+    public static int getFileType(String fileName) {
+        int i = 0;
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String contentTypeFor = fileNameMap.getContentTypeFor(fileName);
+        if (contentTypeFor != null) {// 当是图片时不为空，是视频时为空
+            i = 1;
+        }
+        return i;
     }
 }

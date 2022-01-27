@@ -94,11 +94,10 @@ public class FileService {
         return fileDao.getById(id);
     }
 
-    public PageInfo findPage(int page, int pageSize){
-        PageHelper.startPage(page,pageSize);
-        List<FileMeta> fileList=fileDao.getFileList();
-        PageInfo pageInfo = new PageInfo(fileList);
-        return pageInfo;
+
+    public Boolean deleteById(String fileId){
+        int i = fileDao.deleteById(Long.valueOf(fileId));
+        return i>0;
     }
 
 

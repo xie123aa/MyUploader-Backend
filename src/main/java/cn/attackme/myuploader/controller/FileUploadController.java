@@ -127,4 +127,10 @@ public class FileUploadController {
         PageInfo pageInfo = new PageInfo(fileList);
         return pageInfo;
     }
+
+    @RequestMapping("/delete/{fileId}")
+    @ResponseBody
+    public Boolean delte(@PathVariable String fileId) throws UnsupportedEncodingException {
+        return fileService.deleteById(fileId);
+    }
     }
